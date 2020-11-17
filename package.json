@@ -1,0 +1,25 @@
+{
+	"dependencies": {
+		"all": "^0.0.0",
+		"dotenv": "^8.2.0",
+		"graphql-yoga": "^1.18.3",
+		"morgan": "^1.10.0"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.10.5",
+		"@babel/core": "^7.10.5",
+		"@babel/node": "^7.10.5",
+		"@babel/preset-env": "^7.10.4",
+		"nodemon": "^2.0.4"
+	},
+	"name": "kohi2020_team3_backend",
+	"version": "1.0.0",
+	"description": "Backend for project to predict prognosis of patients based on pre/intra operative data",
+	"main": "index.js",
+	"repository": "https://github.com/slee333/kohi2020_team3_backend.git",
+	"author": "Seung Wook Lee <seungwooklee94@gmail.com>",
+	"license": "MIT",
+	"scripts": {
+		"dev": "nodemon --exec npx babel-node src/server.js"
+	}
+}
