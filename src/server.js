@@ -2,38 +2,22 @@ require('dotenv').config();
 import {
 	GraphQLServer
 } from 'graphql-yoga';
+import logger from "morgan";
+import schema from "./schema";
 
 // read PORT Number from .env file
-const PORT = process.env.PORT || 4111;
-
-// Define types
-const typeDefs = `
-    type Query {
-        hello: String!
-    }
-`;
-
-// add resolver
-const resolvers = {
-	Query: {
-		hello: () => 'hi'
-	}
-};
+const PORT = process.env.PORT || 4100;
 
 // run server
-const server = new GraphQLServer({
-	typeDefs,
-	resolvers
-});
+const server = new GraphQLServer({	schema });
+
+server.express.use(logger("dev"))
 
 server.start({
 		port: PORT
-	},
-	() => {
-		// Callback function
-		'Server running on port: ${PORT}';
-	}
+	}, () =>
+	console.log(`Server running on http://localhost:${PORT}`)
 );
 
 // misc
-console.log('Hello! Do I need prisma though?\n I just need to run some Python code - no need of database');
+//console.log('Hello! Do I need prisma though?\n I just need to run some Python code - no need of database');
