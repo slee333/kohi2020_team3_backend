@@ -2,7 +2,7 @@ import json
 import pandas as pd
 import pathlib
 import sys
-print("Script loaded!")
+# print("Script loaded!")
 
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
@@ -71,26 +71,31 @@ def one_hot_asa( data ):
 
   return data_1, data_2, data_3
 
-for line in sys.stdin:
-        # data = json.load(line)
-        # age = data.age
-        # print( f'Age is {age}' )
-    cwd = pathlib.Path(__file__).parent.absolute()
-    data = pd.DataFrame(json.loads(line[:-1]), index=[1])
-    mode = data.loc[1,'mode']
-    modelname = data.loc[1,'modelname']
+cwd = pathlib.Path(__file__).parent.absolute()
+data = pd.DataFrame(json.loads(sys.argv[1]), index=[1])
+mode = data.loc[1,'mode']
+modelname = data.loc[1,'modelname']
 
+if modelname == 'DNN':
     model = tf.keras.models.load_model(os.path.join(cwd, 'models', f'{modelname}_{mode}'))
-    #model = tf.keras.models.load_model(os.path.join(cwd, 'models', 'DNN_death30'))
-    if modelname == 'DNN':
-        input_data = preprocess_features(data[ftrs])
-        output_softmax = model.predict_proba( input_data )[0][0]
-        output_class = round(output_softmax)
-    elif modelname =='ASADNN':
-        input_data = preprocess_features(data[ftrs]+['asa'])
-        output_softmax = model.predict(one_hot_asa( input_data ))[0][0]
-        output_class = round(output_softmax)
+    input_data = preprocess_features(data[ftrs])
+    output_softmax = model.predict_proba( input_data )[0][0]
+    output_class = round(output_softmax)
+elif modelname =='ASADNN':
+    model = tf.keras.models.load_model(os.path.join(cwd, 'models', f'{modelname}_{mode}'))
+    input_data = preprocess_features(data[ftrs+['asa']])
+    output_softmax = model.predict(one_hot_asa( input_data ))[0][0]
+    output_class = round(output_softmax)
+else:
+    output_softmax = 'Not supported'
+    output_class = 'Not supported'
 
-    # print( os.path.dirname(os.path.abspath(__file__)) )
-    print( modelname, mode, output_softmax, output_class )
-    # print(data[ftrs].dtypes)
+output_obj = {
+    "modelname": modelname,
+    "mode": mode,
+    "output_softmax": output_softmax,
+    "output_class": output_class
+}
+
+print( output_obj )
+
